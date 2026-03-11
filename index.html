@@ -4,89 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KabanGo - Смотреть фильмы онлайн</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #161625;
+            --bg-card: #1c1c30;
+            --bg-header: #12121f;
+            --accent: #00b894;
+            --accent-hover: #00d9a7;
+            --accent-dark: #009975;
+            --accent-glow: rgba(0,184,148,0.15);
+            --text-primary: #e8e8f0;
+            --text-secondary: #8a8aa0;
+            --text-muted: #5a5a70;
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(0,184,148,0.3);
+            --gold: #f5c518;
+            --red: #e94560;
+        }
+
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes tickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #1a1a2e;
-            color: #e0e0e0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
         /* HEADER */
         header {
-            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            background: var(--bg-header);
             padding: 0;
-            border-bottom: 2px solid #e94560;
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
         }
         .header-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 30px;
+            padding: 0 24px;
+            height: 60px;
+            max-width: 1300px;
+            margin: 0 auto;
         }
         .logo {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 900;
             color: #fff;
             text-decoration: none;
             letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 2px;
         }
-        .logo span { color: #e94560; }
+        .logo span { color: var(--accent); }
         .search-bar {
             display: flex;
             gap: 0;
+            position: relative;
         }
         .search-bar input {
-            background: #1a1a2e;
-            border: 1px solid #333;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
             color: #fff;
-            padding: 8px 16px;
-            border-radius: 4px 0 0 4px;
-            width: 280px;
-            font-size: 14px;
+            padding: 10px 18px;
+            border-radius: 8px 0 0 8px;
+            width: 320px;
+            font-size: 13px;
             outline: none;
+            transition: all 0.25s;
+            font-family: inherit;
         }
-        .search-bar input:focus { border-color: #e94560; }
+        .search-bar input::placeholder { color: var(--text-muted); }
+        .search-bar input:focus { border-color: var(--accent); background: rgba(0,184,148,0.05); }
         .search-bar button {
-            background: #e94560;
+            background: var(--accent);
             border: none;
             color: #fff;
-            padding: 8px 18px;
-            border-radius: 0 4px 4px 0;
+            padding: 10px 18px;
+            border-radius: 0 8px 8px 0;
             cursor: pointer;
             font-size: 14px;
+            transition: all 0.25s;
+            font-weight: 600;
         }
-        .search-bar button:hover { background: #c73650; }
+        .search-bar button:hover { background: var(--accent-hover); }
 
         /* NAV */
         nav {
             background: rgba(0,0,0,0.3);
-            padding: 0 30px;
+            border-top: 1px solid var(--border);
         }
         nav ul {
             list-style: none;
             display: flex;
-            gap: 0;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 24px;
+            overflow-x: auto;
         }
         nav ul li a {
             display: block;
-            padding: 10px 18px;
-            color: #ccc;
+            padding: 11px 16px;
+            color: var(--text-secondary);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             transition: all 0.2s;
             border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            position: relative;
         }
+        nav ul li a::after { display: none; }
         nav ul li a:hover, nav ul li a.active {
-            color: #fff;
-            background: rgba(233,69,96,0.15);
-            border-bottom-color: #e94560;
+            color: var(--accent);
+            border-bottom-color: var(--accent);
         }
 
         /* MAIN LAYOUT */
@@ -94,7 +144,7 @@
             display: flex;
             max-width: 1300px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 24px;
             gap: 20px;
         }
 
@@ -104,30 +154,83 @@
             flex-shrink: 0;
         }
         .sidebar-block {
-            background: #16213e;
-            border-radius: 8px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
             padding: 16px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s;
+        }
+        .sidebar-block:hover {
+            border-color: var(--border-hover);
         }
         .sidebar-block h3 {
-            color: #e94560;
-            font-size: 15px;
-            margin-bottom: 12px;
+            color: var(--text-primary);
+            font-size: 13px;
+            margin-bottom: 10px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .sidebar-block ul { list-style: none; }
         .sidebar-block ul li a {
-            color: #aaa;
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 13px;
             display: flex;
             justify-content: space-between;
-            padding: 4px 0;
-            transition: color 0.2s;
+            padding: 6px 8px;
+            transition: all 0.2s;
+            border-radius: 6px;
         }
-        .sidebar-block ul li a:hover { color: #e94560; }
-        .sidebar-block ul li a .count { color: #666; font-size: 12px; }
+        .sidebar-block ul li a:hover { color: var(--accent); background: var(--accent-glow); }
+        .sidebar-block ul li a .count { color: var(--text-muted); font-size: 12px; font-weight: 600; }
+
+        /* SIDEBAR AD */
+        .sidebar-ad {
+            display: block;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+        .sidebar-ad:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        .sidebar-ad img {
+            width: 100%;
+            display: block;
+        }
+
+        /* PARTNER TICKER */
+        .partner-ticker {
+            background: rgba(0,0,0,0.4);
+            padding: 8px 0;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+        .partner-ticker-inner {
+            display: flex;
+            gap: 40px;
+            animation: tickerScroll 25s linear infinite;
+            white-space: nowrap;
+        }
+        .partner-ticker a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .partner-ticker a:hover { opacity: 1; }
 
         /* CONTENT */
         .content {
@@ -135,87 +238,138 @@
             min-width: 0;
         }
         .section-title {
-            font-size: 20px;
+            font-size: 15px;
             font-weight: 700;
             margin-bottom: 16px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e94560;
+            padding: 10px 16px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: none;
+            border-image: none;
         }
-        .section-title .icon { color: #e94560; }
+        .section-title .icon { color: var(--accent); font-size: 16px; }
 
         /* MOVIE CARDS */
         .movies-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 16px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
         }
         .movie-card {
-            background: #16213e;
+            background: var(--bg-secondary);
             border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
+            border: 1px solid var(--border);
         }
         .movie-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(233,69,96,0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            border-color: var(--border-hover);
+        }
+        .movie-card::before { display: none; }
+        .movie-card .poster-wrap {
+            position: relative;
+            overflow: hidden;
         }
         .movie-card .poster {
             width: 100%;
             aspect-ratio: 2/3;
             object-fit: cover;
             display: block;
+            transition: transform 0.4s ease;
         }
+        .movie-card:hover .poster { transform: scale(1.06); }
         .movie-card .poster-placeholder {
             width: 100%;
             aspect-ratio: 2/3;
-            background: linear-gradient(135deg, #0f3460, #16213e);
+            background: linear-gradient(135deg, #1a1a30, #222240);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 48px;
+            transition: transform 0.4s ease;
         }
+        .movie-card:hover .poster-placeholder { transform: scale(1.06); }
+        .movie-card .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 4;
+        }
+        .movie-card:hover .card-overlay { opacity: 1; }
+        .movie-card .play-btn-overlay {
+            width: 56px;
+            height: 56px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0,184,148,0.5);
+            transform: scale(0.8);
+            transition: transform 0.3s;
+        }
+        .movie-card:hover .play-btn-overlay { transform: scale(1); }
         .movie-card .quality {
             position: absolute;
             top: 8px;
             left: 8px;
-            background: #e94560;
+            background: var(--accent);
             color: #fff;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 3px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            z-index: 5;
         }
         .movie-card .rating {
             position: absolute;
             top: 8px;
             right: 8px;
-            background: rgba(0,0,0,0.8);
-            color: #ffd700;
+            background: rgba(0,0,0,0.75);
+            color: var(--gold);
             font-size: 12px;
             font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 3px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            z-index: 5;
         }
         .movie-card .info {
-            padding: 10px;
+            padding: 10px 12px 12px;
         }
         .movie-card .info h4 {
             font-size: 13px;
-            color: #fff;
+            color: var(--text-primary);
             margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-weight: 600;
+            line-height: 1.3;
         }
         .movie-card .info .meta {
             font-size: 11px;
-            color: #888;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         /* MOVIE DETAIL PAGE */
@@ -224,76 +378,98 @@
         }
         .movie-detail.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
         .movie-detail .back-btn {
-            background: #e94560;
-            color: #fff;
-            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
             padding: 8px 20px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
         }
-        .movie-detail .back-btn:hover { background: #c73650; }
+        .movie-detail .back-btn:hover { color: var(--accent); border-color: var(--border-hover); }
         .detail-layout {
             display: flex;
             gap: 24px;
             margin-bottom: 24px;
         }
         .detail-poster {
-            width: 260px;
+            width: 280px;
             flex-shrink: 0;
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid var(--border);
         }
         .detail-poster img, .detail-poster video {
             width: 100%;
-            border-radius: 8px;
+            border-radius: 7px;
         }
         .detail-info {
             flex: 1;
         }
         .detail-info h1 {
             font-size: 26px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             color: #fff;
+            font-weight: 800;
+            line-height: 1.3;
+            -webkit-text-fill-color: unset;
+            background: none;
         }
         .detail-info .meta-row {
             display: flex;
             gap: 8px;
-            margin-bottom: 6px;
             font-size: 14px;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--border);
         }
+        .detail-info .meta-row:hover { background: none; }
         .detail-info .meta-row .label {
-            color: #888;
-            min-width: 140px;
+            color: var(--text-muted);
+            min-width: 130px;
+            font-weight: 600;
+            font-size: 13px;
         }
-        .detail-info .meta-row .value { color: #ddd; }
+        .detail-info .meta-row .value { color: var(--text-primary); font-weight: 500; }
         .detail-info .description {
             margin-top: 16px;
-            line-height: 1.7;
-            color: #bbb;
+            line-height: 1.8;
+            color: var(--text-secondary);
             font-size: 14px;
+            background: var(--bg-secondary);
+            padding: 16px 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
         }
         .detail-info .kp-badge {
-            display: inline-block;
-            background: #3bb33b;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #2d8e2d;
             color: #fff;
             font-weight: 700;
-            padding: 2px 10px;
+            padding: 4px 12px;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 13px;
         }
         .detail-info .imdb-badge {
-            display: inline-block;
-            background: #f5c518;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--gold);
             color: #000;
             font-weight: 700;
-            padding: 2px 10px;
+            padding: 4px 12px;
             border-radius: 4px;
-            font-size: 14px;
-            margin-left: 6px;
+            font-size: 13px;
+            margin-left: 8px;
         }
 
         /* PLAYER */
@@ -301,82 +477,106 @@
             background: #000;
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
         .player-section video {
             width: 100%;
             max-height: 600px;
             display: block;
         }
+        .player-section iframe {
+            border-radius: 0;
+        }
         .player-placeholder {
             width: 100%;
-            height: 500px;
+            height: 450px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 16px;
-            color: #888;
-            font-size: 18px;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 16px;
+            background: #0a0a14;
         }
         .player-placeholder .play-icon {
-            font-size: 64px;
-            color: #e94560;
+            width: 70px;
+            height: 70px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #fff;
+            box-shadow: 0 4px 24px rgba(0,184,148,0.4);
         }
 
         /* UPLOAD SECTION */
         .upload-section {
-            background: #16213e;
-            border-radius: 8px;
-            padding: 24px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 28px;
             margin-bottom: 24px;
+            border: 1px solid var(--border);
         }
         .upload-section h3 {
-            color: #e94560;
-            margin-bottom: 16px;
+            color: var(--text-primary);
+            margin-bottom: 18px;
             font-size: 18px;
+            font-weight: 700;
         }
         .form-group {
             margin-bottom: 14px;
         }
         .form-group label {
             display: block;
-            color: #aaa;
-            font-size: 13px;
-            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            background: #1a1a2e;
-            border: 1px solid #333;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
             color: #fff;
             padding: 10px 14px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 14px;
             outline: none;
             font-family: inherit;
+            transition: all 0.2s;
         }
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            border-color: #e94560;
+            border-color: var(--accent);
+            background: rgba(0,184,148,0.04);
         }
         .form-group textarea { resize: vertical; min-height: 80px; }
         .form-row {
             display: flex;
-            gap: 14px;
+            gap: 12px;
         }
         .form-row .form-group { flex: 1; }
         .upload-btn {
-            background: #e94560;
+            background: var(--accent);
             color: #fff;
             border: none;
-            padding: 12px 32px;
-            border-radius: 4px;
-            font-size: 15px;
-            font-weight: 600;
+            padding: 12px 36px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.25s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: inherit;
         }
-        .upload-btn:hover { background: #c73650; }
+        .upload-btn:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,184,148,0.35); }
         .file-input-wrapper {
             position: relative;
         }
@@ -387,29 +587,49 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: #1a1a2e;
-            border: 2px dashed #333;
+            background: rgba(255,255,255,0.02);
+            border: 2px dashed rgba(255,255,255,0.08);
             border-radius: 8px;
-            padding: 24px;
+            padding: 28px;
             text-align: center;
             cursor: pointer;
-            transition: border-color 0.2s;
+            transition: all 0.25s;
             justify-content: center;
             flex-direction: column;
         }
-        .file-label:hover { border-color: #e94560; }
-        .file-label .upload-icon { font-size: 36px; color: #e94560; }
-        .file-label span { color: #888; font-size: 14px; }
+        .file-label:hover { border-color: var(--accent); background: var(--accent-glow); }
+        .file-label .upload-icon { font-size: 32px; color: var(--accent); }
+        .file-label span { color: var(--text-muted); font-size: 13px; }
 
         /* FOOTER */
         footer {
-            background: #16213e;
-            border-top: 2px solid #e94560;
+            background: var(--bg-header);
+            border-top: 1px solid var(--border);
             text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            color: #666;
-            font-size: 13px;
+            padding: 28px 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .footer-partners {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .footer-partners a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 14px;
+            border: 1px solid rgba(0,184,148,0.2);
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .footer-partners a:hover {
+            background: var(--accent-glow);
+            border-color: var(--accent);
         }
 
         /* SIDE BANNERS */
@@ -420,15 +640,14 @@
             z-index: 99;
             width: 160px;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: all 0.3s ease;
         }
-        .side-banner:hover { opacity: 0.85; }
-        .side-banner.left { left: 0; }
-        .side-banner.right { right: 0; }
+        .side-banner:hover { opacity: 0.9; transform: translateY(-50%) scale(1.02); }
+        .side-banner.left { left: 0; overflow: hidden; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+        .side-banner.right { right: 0; overflow: hidden; box-shadow: -4px 0 20px rgba(0,0,0,0.5); }
         .side-banner img {
             width: 100%;
             height: auto;
-            border-radius: 0;
             display: block;
         }
         @media (max-width: 1600px) {
@@ -438,18 +657,74 @@
             .side-banner { display: none; }
         }
 
+        /* PROMO CARDS */
+        .promo-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 12px;
+            text-align: center;
+            transition: all 0.25s;
+        }
+        .promo-card:hover {
+            border-color: var(--border-hover);
+        }
+        .promo-card .promo-title {
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .promo-card .promo-text {
+            color: var(--text-secondary);
+            font-size: 11px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .promo-card .promo-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            padding: 7px 18px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.25s;
+        }
+        .promo-card .promo-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .container { padding: 12px; }
+            .header-top { padding: 0 12px; }
+            .search-bar input { width: 200px; }
+            .movies-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+            .detail-layout { flex-direction: column; }
+            .detail-poster { width: 100%; max-width: 300px; }
+        }
+
         /* HIDDEN */
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
+<!-- SIDE BANNERS -->
 <a class="side-banner left" href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
-    <img src="https://i.postimg.cc/NjN0FfJP/image.png" alt="1xBet">
+    <img src="https://i.imgur.com/qiTbEcd.jpeg" alt="1xBet">
 </a>
 <a class="side-banner right" href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
-    <img src="https://i.postimg.cc/QMwxgYrJ/image.png" alt="1xBet">
+    <img src="https://i.imgur.com/pE30nTu.jpeg" alt="1xBet">
 </a>
+
+
 
 <header>
     <div class="header-top">
@@ -473,8 +748,33 @@
     </nav>
 </header>
 
+<!-- PARTNER TICKER -->
+<div class="partner-ticker">
+    <div class="partner-ticker-inner">
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🔥 1xBet — Ставки на спорт</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">💰 Pin-Up Casino — Бонус 500%</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🎰 Vavada — 100 фриспинов</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">⚡ Mostbet — Промокод KABANGO</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🏆 1WIN — До 500% на депозит</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">💎 Melbet — VIP бонусы</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🎲 Cat Casino — Кешбэк 10%</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🔥 1xBet — Ставки на спорт</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">💰 Pin-Up Casino — Бонус 500%</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🎰 Vavada — 100 фриспинов</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">⚡ Mostbet — Промокод KABANGO</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🏆 1WIN — До 500% на депозит</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">💎 Melbet — VIP бонусы</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🎲 Cat Casino — Кешбэк 10%</a>
+    </div>
+</div>
+
 <div class="container">
     <aside class="sidebar">
+        <!-- SIDEBAR AD 1 -->
+        <a class="sidebar-ad" href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
+            <img src="https://i.imgur.com/qiTbEcd.jpeg" alt="1xBet">
+        </a>
+
         <div class="sidebar-block">
             <h3>📁 Категории</h3>
             <ul>
@@ -488,6 +788,14 @@
                 <li><a href="#" onclick="filterGenre('мультфильм')">Мультфильмы <span class="count" id="countCartoon">0</span></a></li>
             </ul>
         </div>
+
+        <!-- PROMO CARD 1 -->
+        <div class="promo-card">
+            <div class="promo-title">🔥 1xBet</div>
+            <div class="promo-text">Бонус до 100 000₽ на первый депозит! Ставь и выигрывай!</div>
+            <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn">Забрать бонус →</a>
+        </div>
+
         <div class="sidebar-block">
             <h3>📅 По году</h3>
             <ul>
@@ -498,6 +806,14 @@
                 <li><a href="#" onclick="filterYear(2022)">2022 года</a></li>
             </ul>
         </div>
+
+        <!-- PROMO CARD 2 -->
+        <div class="promo-card">
+            <div class="promo-title">💎 Pin-Up</div>
+            <div class="promo-text">250 фриспинов без депозита + кешбэк до 10% каждую неделю!</div>
+            <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn">Играть сейчас →</a>
+        </div>
+
         <div class="sidebar-block">
             <h3>🌍 По странам</h3>
             <ul>
@@ -507,22 +823,118 @@
                 <li><a href="#" onclick="filterCountry('Турция')">Турецкие</a></li>
             </ul>
         </div>
+
+        <!-- PROMO CARD 3 -->
+        <div class="promo-card">
+            <div class="promo-title">⚡ Mostbet</div>
+            <div class="promo-text">Промокод KABANGO — +125% к депозиту! Лучшие коэффициенты!</div>
+            <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn">Активировать →</a>
+        </div>
+
+        <!-- SIDEBAR AD 2 -->
+        <a class="sidebar-ad" href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
+            <img src="https://i.imgur.com/pE30nTu.jpeg" alt="1xBet">
+        </a>
+
+        <!-- PROMO CARD 4 -->
+        <div class="promo-card">
+            <div class="promo-title">🏆 1WIN</div>
+            <div class="promo-text">До 500% бонус на первые 4 депозита! Присоединяйся!</div>
+            <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn">Получить бонус →</a>
+        </div>
     </aside>
 
     <main class="content">
         <!-- HOME PAGE -->
         <div id="homePage">
+            <!-- MINI AD ROW TOP -->
+            <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 12px;font-size:11px;min-width:120px;">🔥 1xBet — Бонус 100%</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 12px;font-size:11px;min-width:120px;">🎰 Vavada — 100 FS</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 12px;font-size:11px;min-width:120px;">💰 Pin-Up — Кешбэк</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 12px;font-size:11px;min-width:120px;">⚡ Mostbet — KABANGO</a>
+            </div>
+
             <div class="section-title"><span class="icon">🔥</span> Новинки кино</div>
             <div class="movies-grid" id="moviesGrid"></div>
+
+            <!-- MINI PARTNER STRIP -->
+            <div style="display:flex;gap:6px;margin:16px 0;flex-wrap:wrap;justify-content:center;">
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">🔥 1xBet</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">🎰 Vavada</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">💎 Melbet</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">🏆 1WIN</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">💰 Pin-Up</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">🎲 Cat Casino</a>
+            </div>
+
+            <!-- PARTNER GRID -->
+            <div class="section-title"><span class="icon">🤝</span> Наши партнёры</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:24px;">
+                <div class="promo-card" style="padding:12px;">
+                    <div class="promo-title" style="font-size:13px;">🔥 1xBet</div>
+                    <div class="promo-text" style="font-size:11px;">Бонус 100%</div>
+                    <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="font-size:10px;padding:5px 12px;">Перейти →</a>
+                </div>
+                <div class="promo-card" style="padding:12px;">
+                    <div class="promo-title" style="font-size:13px;">🎰 Vavada</div>
+                    <div class="promo-text" style="font-size:11px;">100 фриспинов</div>
+                    <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="font-size:10px;padding:5px 12px;">Играть →</a>
+                </div>
+                <div class="promo-card" style="padding:12px;">
+                    <div class="promo-title" style="font-size:13px;">💰 Pin-Up</div>
+                    <div class="promo-text" style="font-size:11px;">Кешбэк 10%</div>
+                    <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="font-size:10px;padding:5px 12px;">Забрать →</a>
+                </div>
+                <div class="promo-card" style="padding:12px;">
+                    <div class="promo-title" style="font-size:13px;">⚡ Mostbet</div>
+                    <div class="promo-text" style="font-size:11px;">Промокод KABANGO</div>
+                    <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="font-size:10px;padding:5px 12px;">Бонус →</a>
+                </div>
+                <div class="promo-card" style="padding:12px;">
+                    <div class="promo-title" style="font-size:13px;">🏆 1WIN</div>
+                    <div class="promo-text" style="font-size:11px;">500% депозит</div>
+                    <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="font-size:10px;padding:5px 12px;">Получить →</a>
+                </div>
+                <div class="promo-card" style="padding:12px;">
+                    <div class="promo-title" style="font-size:13px;">💎 Melbet</div>
+                    <div class="promo-text" style="font-size:11px;">VIP бонусы</div>
+                    <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="font-size:10px;padding:5px 12px;">Перейти →</a>
+                </div>
+            </div>
         </div>
 
         <!-- MOVIE DETAIL PAGE -->
         <div id="detailPage" class="movie-detail">
             <button class="back-btn" onclick="showHome()">← Назад к списку</button>
+
+            <!-- MINI AD ABOVE PLAYER -->
+            <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 10px;font-size:10px;min-width:100px;">🔥 1xBet — Бонус 100%</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 10px;font-size:10px;min-width:100px;">🎰 Vavada — FS</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 10px;font-size:10px;min-width:100px;">💰 Pin-Up</a>
+            </div>
+
             <div id="playerContainer" class="player-section"></div>
+
+            <!-- MINI AD BELOW PLAYER -->
+            <div style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap;">
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 10px;font-size:10px;min-width:100px;">⚡ Mostbet — KABANGO</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 10px;font-size:10px;min-width:100px;">🏆 1WIN — 500%</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="flex:1;text-align:center;padding:8px 10px;font-size:10px;min-width:100px;">💎 Melbet VIP</a>
+            </div>
+
             <div class="detail-layout">
                 <div class="detail-poster" id="detailPoster"></div>
                 <div class="detail-info" id="detailInfo"></div>
+            </div>
+
+            <!-- MINI AD BELOW DETAIL -->
+            <div style="display:flex;gap:6px;margin:10px 0;flex-wrap:wrap;justify-content:center;">
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">🔥 1xBet</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">🎰 Vavada</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">🎲 Cat Casino</a>
+                <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" style="background:rgba(0,184,148,0.08);color:#00b894;text-decoration:none;padding:5px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid rgba(0,184,148,0.2);">🎯 Leon</a>
             </div>
         </div>
 
@@ -605,13 +1017,31 @@
     </main>
 </div>
 
-<div style="max-width:900px;margin:0 auto 0;text-align:center;">
-    <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
-        <img src="https://i.postimg.cc/G3khYjgs/image.png" alt="1xBet" style="width:100%;max-width:900px;border-radius:8px;display:block;margin:0 auto;">
-    </a>
+<!-- PRE-FOOTER PARTNER STRIP -->
+<div style="max-width:1300px;margin:16px auto;padding:0 20px;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">🔥 1xBet — Бонус 100%</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">🎰 Vavada — 100 FS</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">💰 Pin-Up — Кешбэк</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">⚡ Mostbet — KABANGO</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">🏆 1WIN — 500%</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">💎 Melbet VIP</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">🎲 Cat Casino</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">🎯 Leon Bet</a>
+    </div>
 </div>
 
 <footer>
+    <div class="footer-partners">
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🔥 1xBet</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🎰 Vavada</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">💰 Pin-Up</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">⚡ Mostbet</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🏆 1WIN</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">💎 Melbet</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🎲 Cat Casino</a>
+        <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">🎯 Leon</a>
+    </div>
     © 2026 KabanGo — Смотреть фильмы онлайн бесплатно в хорошем качестве
 </footer>
 
@@ -627,6 +1057,123 @@
             imdb: 7.9,
             quality: '1080p',
             description: 'Иван приезжает в бандитский Петербург, чтобы решить проблемы. Во Флориде он задолжал опасным людям 10 000 евро, и времени почти не осталось. Холодный Питер встречает его серыми улицами, старыми знакомыми и новыми врагами. Здесь каждый живёт по своим правилам, и чтобы выбраться из долгов, Ивану придётся играть по жёстким законам города.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: 'https://i.imgur.com/lLG1e41.png'
+        },
+        {
+            id: 2,
+            title: 'Тёмный коридор',
+            year: 2025,
+            genre: 'ужасы',
+            country: 'Россия',
+            kp: 7.3,
+            imdb: 6.8,
+            quality: '4K',
+            description: 'Группа студентов решает провести ночь в заброшенном бункере времён холодной войны. Сначала это кажется забавным приключением, но вскоре двери запечатываются, а из темноты начинают доноситься звуки, которым нет объяснения. Выход — один, и он ведёт только глубже.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        },
+        {
+            id: 3,
+            title: 'Код Вселенной',
+            year: 2026,
+            genre: 'фантастика',
+            country: 'США',
+            kp: 8.5,
+            imdb: 8.2,
+            quality: '4K',
+            description: 'Учёный-физик случайно обнаруживает, что наша реальность — симуляция. Когда он пытается сообщить об этом миру, система начинает защищаться. Законы физики ломаются, люди исчезают, а время течёт в обратную сторону. Единственный шанс — найти исходный код и переписать правила.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        },
+        {
+            id: 4,
+            title: 'Любовь в Сеуле',
+            year: 2025,
+            genre: 'драма',
+            country: 'Корея',
+            kp: 7.8,
+            imdb: 7.5,
+            quality: '1080p',
+            description: 'Двое незнакомцев встречаются на крыше небоскрёба в Сеуле во время ливня. Она — хирург, уставшая от бесконечных операций. Он — уличный музыкант, мечтающий о большой сцене. Одна ночь меняет всё, но утром каждый должен вернуться к своей жизни.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        },
+        {
+            id: 5,
+            title: 'Операция Стамбул',
+            year: 2026,
+            genre: 'боевик',
+            country: 'Турция',
+            kp: 7.1,
+            imdb: 6.9,
+            quality: '1080p',
+            description: 'Бывший спецназовец вынужден вернуться в игру, когда его дочь похищают международные торговцы оружием. 48 часов. Стамбул. Без правил. Только один человек способен пройти сквозь армию наёмников и вытащить её живой.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        },
+        {
+            id: 6,
+            title: 'Пятница навсегда',
+            year: 2026,
+            genre: 'комедия',
+            country: 'Россия',
+            kp: 6.9,
+            imdb: 6.4,
+            quality: '720p',
+            description: 'Офисный работник Серёга просыпается каждое утро в одной и той же пятнице. Сначала это кажется мечтой: вечеринки, безумные поступки, ноль последствий. Но когда он понимает, что застрял навсегда, начинается настоящий хаос. Как выбраться из бесконечной пятницы?',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        },
+        {
+            id: 7,
+            title: 'Красная зона',
+            year: 2025,
+            genre: 'триллер',
+            country: 'США',
+            kp: 7.6,
+            imdb: 7.4,
+            quality: '4K',
+            description: 'Журналистка расследует серию загадочных исчезновений в маленьком городке на границе Мексики. Чем глубже она копает, тем опаснее становится. Местная полиция молчит, жители боятся говорить, а кто-то уже следит за каждым её шагом.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        },
+        {
+            id: 8,
+            title: 'Драконий остров',
+            year: 2026,
+            genre: 'мультфильм',
+            country: 'США',
+            kp: 8.0,
+            imdb: 7.8,
+            quality: '4K',
+            description: 'Маленькая девочка Мия находит карту, ведущую к легендарному острову, где живут последние драконы. Вместе с говорящим котом и нелепым роботом она отправляется в путешествие через океан. Но остров хранит секрет, который изменит весь мир.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        },
+        {
+            id: 9,
+            title: 'Нулевой пациент',
+            year: 2024,
+            genre: 'триллер',
+            country: 'Россия',
+            kp: 7.4,
+            imdb: 7.1,
+            quality: '1080p',
+            description: 'В секретной лаборатории на Урале происходит утечка экспериментального вещества. Один из учёных заражён и не подозревает об этом. У группы спецагентов есть 12 часов, чтобы найти его и предотвратить пандемию, которая уничтожит цивилизацию.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        },
+        {
+            id: 10,
+            title: 'Империя грёз',
+            year: 2026,
+            genre: 'фантастика',
+            country: 'США',
+            kp: 8.3,
+            imdb: 8.0,
+            quality: '4K',
+            description: 'В 2087 году люди научились торговать снами. Корпорация DreamCorp контролирует рынок, продавая идеальные сновидения богатым. Но хакер-одиночка обнаруживает, что через сны корпорация управляет сознанием миллионов. Пора проснуться.',
             videoURL: 'https://streamable.com/9lr0o4',
             posterURL: null
         }
@@ -703,12 +1250,17 @@
         }
         grid.innerHTML = list.map(m => `
             <div class="movie-card" onclick="openMovie(${m.id})">
-                ${m.posterURL
-                    ? `<img class="poster" src="${m.posterURL}" alt="${m.title}">`
-                    : `<div class="poster-placeholder">🎬</div>`
-                }
-                <div class="quality">${m.quality}</div>
-                <div class="rating">⭐ ${m.kp}</div>
+                <div class="poster-wrap">
+                    ${m.posterURL
+                        ? `<img class="poster" src="${m.posterURL}" alt="${m.title}">`
+                        : `<div class="poster-placeholder">🎬</div>`
+                    }
+                    <div class="card-overlay">
+                        <div class="play-btn-overlay">▶</div>
+                    </div>
+                    <div class="quality">${m.quality}</div>
+                    <div class="rating">⭐ ${m.kp}</div>
+                </div>
                 <div class="info">
                     <h4>${m.title}</h4>
                     <div class="meta">${m.year} · ${m.genre} · ${m.country}</div>
@@ -731,7 +1283,7 @@
                 playerContainer.innerHTML = `<video controls autoplay><source src="${m.videoURL}">Ваш браузер не поддерживает видео.</video>`;
             }
         } else {
-            playerContainer.innerHTML = `<div class="player-placeholder"><div class="play-icon">▶</div>Видеофайл не загружен</div>`;
+            playerContainer.innerHTML = `<div class="player-placeholder"><div class="play-icon">▶</div><span>Видеофайл не загружен</span></div>`;
         }
 
         // Poster
@@ -816,6 +1368,7 @@
 
     // Init
     renderMovies(movies);
+    updateCounts();
 </script>
 
 </body>
