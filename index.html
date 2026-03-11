@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KabanGo - Смотреть фильмы онлайн</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            padding: 0;
+            border-bottom: 2px solid #e94560;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 30px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .logo span { color: #e94560; }
+        .search-bar {
+            display: flex;
+            gap: 0;
+        }
+        .search-bar input {
+            background: #1a1a2e;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px 0 0 4px;
+            width: 280px;
+            font-size: 14px;
+            outline: none;
+        }
+        .search-bar input:focus { border-color: #e94560; }
+        .search-bar button {
+            background: #e94560;
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .search-bar button:hover { background: #c73650; }
+
+        /* NAV */
+        nav {
+            background: rgba(0,0,0,0.3);
+            padding: 0 30px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 0;
+        }
+        nav ul li a {
+            display: block;
+            padding: 10px 18px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            color: #fff;
+            background: rgba(233,69,96,0.15);
+            border-bottom-color: #e94560;
+        }
+
+        /* MAIN LAYOUT */
+        .container {
+            display: flex;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+        }
+        .sidebar-block {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .sidebar-block h3 {
+            color: #e94560;
+            font-size: 15px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #333;
+        }
+        .sidebar-block ul { list-style: none; }
+        .sidebar-block ul li a {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            transition: color 0.2s;
+        }
+        .sidebar-block ul li a:hover { color: #e94560; }
+        .sidebar-block ul li a .count { color: #666; font-size: 12px; }
+
+        /* CONTENT */
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e94560;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title .icon { color: #e94560; }
+
+        /* MOVIE CARDS */
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .movie-card {
+            background: #16213e;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+        .movie-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(233,69,96,0.3);
+        }
+        .movie-card .poster {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            display: block;
+        }
+        .movie-card .poster-placeholder {
+            width: 100%;
+            aspect-ratio: 2/3;
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        .movie-card .quality {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #e94560;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        .movie-card .rating {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.8);
+            color: #ffd700;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        .movie-card .info {
+            padding: 10px;
+        }
+        .movie-card .info h4 {
+            font-size: 13px;
+            color: #fff;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .movie-card .info .meta {
+            font-size: 11px;
+            color: #888;
+        }
+
+        /* MOVIE DETAIL PAGE */
+        .movie-detail {
+            display: none;
+        }
+        .movie-detail.active {
+            display: block;
+        }
+        .movie-detail .back-btn {
+            background: #e94560;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .movie-detail .back-btn:hover { background: #c73650; }
+        .detail-layout {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .detail-poster {
+            width: 260px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .detail-poster img, .detail-poster video {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .detail-info {
+            flex: 1;
+        }
+        .detail-info h1 {
+            font-size: 26px;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        .detail-info .meta-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .detail-info .meta-row .label {
+            color: #888;
+            min-width: 140px;
+        }
+        .detail-info .meta-row .value { color: #ddd; }
+        .detail-info .description {
+            margin-top: 16px;
+            line-height: 1.7;
+            color: #bbb;
+            font-size: 14px;
+        }
+        .detail-info .kp-badge {
+            display: inline-block;
+            background: #3bb33b;
+            color: #fff;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .detail-info .imdb-badge {
+            display: inline-block;
+            background: #f5c518;
+            color: #000;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: 6px;
+        }
+
+        /* PLAYER */
+        .player-section {
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .player-section video {
+            width: 100%;
+            max-height: 600px;
+            display: block;
+        }
+        .player-placeholder {
+            width: 100%;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            color: #888;
+            font-size: 18px;
+        }
+        .player-placeholder .play-icon {
+            font-size: 64px;
+            color: #e94560;
+        }
+
+        /* UPLOAD SECTION */
+        .upload-section {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .upload-section h3 {
+            color: #e94560;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            background: #1a1a2e;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: #e94560;
+        }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-row {
+            display: flex;
+            gap: 14px;
+        }
+        .form-row .form-group { flex: 1; }
+        .upload-btn {
+            background: #e94560;
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .upload-btn:hover { background: #c73650; }
+        .file-input-wrapper {
+            position: relative;
+        }
+        .file-input-wrapper input[type="file"] {
+            padding: 8px;
+        }
+        .file-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1a1a2e;
+            border: 2px dashed #333;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .file-label:hover { border-color: #e94560; }
+        .file-label .upload-icon { font-size: 36px; color: #e94560; }
+        .file-label span { color: #888; font-size: 14px; }
+
+        /* FOOTER */
+        footer {
+            background: #16213e;
+            border-top: 2px solid #e94560;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* HIDDEN */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-top">
+        <a href="#" class="logo" onclick="showHome()">KABAN<span>Go</span></a>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Поиск фильмов..." onkeyup="searchMovies()">
+            <button onclick="searchMovies()">🔍</button>
+        </div>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#" class="active" onclick="showHome()">Главная</a></li>
+            <li><a href="#" onclick="filterGenre('all')">Все фильмы</a></li>
+            <li><a href="#" onclick="filterGenre('боевик')">Боевики</a></li>
+            <li><a href="#" onclick="filterGenre('комедия')">Комедии</a></li>
+            <li><a href="#" onclick="filterGenre('ужасы')">Ужасы</a></li>
+            <li><a href="#" onclick="filterGenre('фантастика')">Фантастика</a></li>
+            <li><a href="#" onclick="filterGenre('драма')">Драма</a></li>
+            <li><a href="#" onclick="showUpload()">⬆ Загрузить</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <aside class="sidebar">
+        <div class="sidebar-block">
+            <h3>📁 Категории</h3>
+            <ul>
+                <li><a href="#" onclick="filterGenre('all')">Все фильмы <span class="count" id="countAll">0</span></a></li>
+                <li><a href="#" onclick="filterGenre('боевик')">Боевики <span class="count" id="countAction">0</span></a></li>
+                <li><a href="#" onclick="filterGenre('комедия')">Комедии <span class="count" id="countComedy">0</span></a></li>
+                <li><a href="#" onclick="filterGenre('ужасы')">Ужасы <span class="count" id="countHorror">0</span></a></li>
+                <li><a href="#" onclick="filterGenre('фантастика')">Фантастика <span class="count" id="countScifi">0</span></a></li>
+                <li><a href="#" onclick="filterGenre('драма')">Драма <span class="count" id="countDrama">0</span></a></li>
+                <li><a href="#" onclick="filterGenre('триллер')">Триллеры <span class="count" id="countThriller">0</span></a></li>
+                <li><a href="#" onclick="filterGenre('мультфильм')">Мультфильмы <span class="count" id="countCartoon">0</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-block">
+            <h3>📅 По году</h3>
+            <ul>
+                <li><a href="#" onclick="filterYear(2026)">2026 года</a></li>
+                <li><a href="#" onclick="filterYear(2025)">2025 года</a></li>
+                <li><a href="#" onclick="filterYear(2024)">2024 года</a></li>
+                <li><a href="#" onclick="filterYear(2023)">2023 года</a></li>
+                <li><a href="#" onclick="filterYear(2022)">2022 года</a></li>
+            </ul>
+        </div>
+        <div class="sidebar-block">
+            <h3>🌍 По странам</h3>
+            <ul>
+                <li><a href="#" onclick="filterCountry('Россия')">Российские</a></li>
+                <li><a href="#" onclick="filterCountry('США')">Американские</a></li>
+                <li><a href="#" onclick="filterCountry('Корея')">Корейские</a></li>
+                <li><a href="#" onclick="filterCountry('Турция')">Турецкие</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main class="content">
+        <!-- HOME PAGE -->
+        <div id="homePage">
+            <div class="section-title"><span class="icon">🔥</span> Новинки кино</div>
+            <div class="movies-grid" id="moviesGrid"></div>
+        </div>
+
+        <!-- MOVIE DETAIL PAGE -->
+        <div id="detailPage" class="movie-detail">
+            <button class="back-btn" onclick="showHome()">← Назад к списку</button>
+            <div id="playerContainer" class="player-section"></div>
+            <div class="detail-layout">
+                <div class="detail-poster" id="detailPoster"></div>
+                <div class="detail-info" id="detailInfo"></div>
+            </div>
+        </div>
+
+        <!-- UPLOAD PAGE -->
+        <div id="uploadPage" class="hidden">
+            <div class="section-title"><span class="icon">⬆</span> Загрузить фильм</div>
+            <div class="upload-section">
+                <h3>🎬 Добавить свой фильм</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Название фильма</label>
+                        <input type="text" id="movieTitle" placeholder="Например: Мой фильм">
+                    </div>
+                    <div class="form-group">
+                        <label>Год выпуска</label>
+                        <input type="number" id="movieYear" value="2026" min="1900" max="2030">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Жанр</label>
+                        <select id="movieGenre">
+                            <option value="боевик">Боевик</option>
+                            <option value="комедия">Комедия</option>
+                            <option value="ужасы">Ужасы</option>
+                            <option value="фантастика">Фантастика</option>
+                            <option value="драма">Драма</option>
+                            <option value="триллер">Триллер</option>
+                            <option value="мультфильм">Мультфильм</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Страна</label>
+                        <input type="text" id="movieCountry" placeholder="Россия" value="Россия">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Рейтинг КП (0-10)</label>
+                        <input type="number" id="movieKP" step="0.1" min="0" max="10" value="7.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Рейтинг IMDb (0-10)</label>
+                        <input type="number" id="movieIMDB" step="0.1" min="0" max="10" value="6.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Качество</label>
+                        <select id="movieQuality">
+                            <option value="4K">4K UltraHD</option>
+                            <option value="1080p" selected>1080p FullHD</option>
+                            <option value="720p">720p HD</option>
+                            <option value="480p">480p</option>
+                            <option value="CAMRip">CAMRip</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <textarea id="movieDesc" placeholder="Краткое описание сюжета фильма..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Постер (изображение)</label>
+                    <label class="file-label" for="posterFile">
+                        <div class="upload-icon">🖼</div>
+                        <span id="posterFileName">Нажмите чтобы выбрать постер</span>
+                    </label>
+                    <input type="file" id="posterFile" accept="image/*" style="display:none" onchange="updateFileName('posterFile','posterFileName')">
+                </div>
+                <div class="form-group">
+                    <label>Видеофайл фильма</label>
+                    <label class="file-label" for="videoFile">
+                        <div class="upload-icon">🎥</div>
+                        <span id="videoFileName">Нажмите чтобы выбрать видео (.mp4, .webm, .mkv)</span>
+                    </label>
+                    <input type="file" id="videoFile" accept="video/*" style="display:none" onchange="updateFileName('videoFile','videoFileName')">
+                </div>
+                <button class="upload-btn" onclick="addMovie()">🚀 Загрузить фильм</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<footer>
+    © 2026 KabanGo — Смотреть фильмы онлайн бесплатно в хорошем качестве
+</footer>
+
+<script>
+    let movies = [
+        {
+            id: 1,
+            title: 'Брат 2',
+            year: 2026,
+            genre: 'боевик',
+            country: 'Россия',
+            kp: 8.1,
+            imdb: 7.9,
+            quality: '1080p',
+            description: 'Иван приезжает в бандитский Петербург, чтобы решить проблемы. Во Флориде он задолжал опасным людям 10 000 евро, и времени почти не осталось. Холодный Питер встречает его серыми улицами, старыми знакомыми и новыми врагами. Здесь каждый живёт по своим правилам, и чтобы выбраться из долгов, Ивану придётся играть по жёстким законам города.',
+            videoURL: 'https://streamable.com/9lr0o4',
+            posterURL: null
+        }
+    ];
+
+    function getEmbedURL(url) {
+        if (url.includes('streamable.com/')) {
+            const code = url.split('streamable.com/')[1].split('?')[0];
+            return 'https://streamable.com/e/' + code;
+        }
+        if (url.includes('youtube.com/embed/')) {
+            return url;
+        }
+        return null;
+    }
+
+    function updateFileName(inputId, labelId) {
+        const input = document.getElementById(inputId);
+        const label = document.getElementById(labelId);
+        if (input.files.length > 0) {
+            label.textContent = '✅ ' + input.files[0].name;
+        }
+    }
+
+    function addMovie() {
+        const title = document.getElementById('movieTitle').value.trim();
+        if (!title) { alert('Введите название фильма!'); return; }
+
+        const videoFile = document.getElementById('videoFile').files[0];
+        const posterFile = document.getElementById('posterFile').files[0];
+
+        const movie = {
+            id: Date.now(),
+            title: title,
+            year: parseInt(document.getElementById('movieYear').value) || 2026,
+            genre: document.getElementById('movieGenre').value,
+            country: document.getElementById('movieCountry').value || 'Россия',
+            kp: parseFloat(document.getElementById('movieKP').value) || 7.0,
+            imdb: parseFloat(document.getElementById('movieIMDB').value) || 6.5,
+            quality: document.getElementById('movieQuality').value,
+            description: document.getElementById('movieDesc').value || 'Описание отсутствует.',
+            videoURL: null,
+            posterURL: null
+        };
+
+        if (videoFile) {
+            movie.videoURL = URL.createObjectURL(videoFile);
+        }
+        if (posterFile) {
+            movie.posterURL = URL.createObjectURL(posterFile);
+        }
+
+        movies.push(movie);
+        renderMovies(movies);
+        updateCounts();
+        showHome();
+
+        // Reset form
+        document.getElementById('movieTitle').value = '';
+        document.getElementById('movieDesc').value = '';
+        document.getElementById('posterFileName').textContent = 'Нажмите чтобы выбрать постер';
+        document.getElementById('videoFileName').textContent = 'Нажмите чтобы выбрать видео (.mp4, .webm, .mkv)';
+        document.getElementById('videoFile').value = '';
+        document.getElementById('posterFile').value = '';
+
+        alert('🎬 Фильм "' + title + '" успешно загружен!');
+    }
+
+    function renderMovies(list) {
+        const grid = document.getElementById('moviesGrid');
+        if (list.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:#666;font-size:16px;">🎬 Пока нет фильмов. Загрузите свой первый фильм!</div>';
+            return;
+        }
+        grid.innerHTML = list.map(m => `
+            <div class="movie-card" onclick="openMovie(${m.id})">
+                ${m.posterURL
+                    ? `<img class="poster" src="${m.posterURL}" alt="${m.title}">`
+                    : `<div class="poster-placeholder">🎬</div>`
+                }
+                <div class="quality">${m.quality}</div>
+                <div class="rating">⭐ ${m.kp}</div>
+                <div class="info">
+                    <h4>${m.title}</h4>
+                    <div class="meta">${m.year} · ${m.genre} · ${m.country}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openMovie(id) {
+        const m = movies.find(x => x.id === id);
+        if (!m) return;
+
+        // Player
+        const playerContainer = document.getElementById('playerContainer');
+        if (m.videoURL) {
+            const embedUrl = getEmbedURL(m.videoURL);
+            if (embedUrl) {
+                playerContainer.innerHTML = `<iframe src="${embedUrl}" width="100%" height="600" frameborder="0" allow="autoplay; fullscreen" allowfullscreen style="display:block;border:none;"></iframe>`;
+            } else {
+                playerContainer.innerHTML = `<video controls autoplay><source src="${m.videoURL}">Ваш браузер не поддерживает видео.</video>`;
+            }
+        } else {
+            playerContainer.innerHTML = `<div class="player-placeholder"><div class="play-icon">▶</div>Видеофайл не загружен</div>`;
+        }
+
+        // Poster
+        const detailPoster = document.getElementById('detailPoster');
+        detailPoster.innerHTML = m.posterURL
+            ? `<img src="${m.posterURL}" alt="${m.title}">`
+            : `<div class="poster-placeholder" style="border-radius:8px;height:390px;">🎬</div>`;
+
+        // Info
+        document.getElementById('detailInfo').innerHTML = `
+            <h1>${m.title} (${m.year})</h1>
+            <div class="meta-row"><span class="label">Год выпуска:</span> <span class="value">${m.year}</span></div>
+            <div class="meta-row"><span class="label">Страна:</span> <span class="value">${m.country}</span></div>
+            <div class="meta-row"><span class="label">Жанр:</span> <span class="value">${m.genre}</span></div>
+            <div class="meta-row"><span class="label">Качество:</span> <span class="value">${m.quality}</span></div>
+            <div class="meta-row">
+                <span class="label">Рейтинг:</span>
+                <span class="value">
+                    <span class="kp-badge">КП: ${m.kp}</span>
+                    <span class="imdb-badge">IMDb: ${m.imdb}</span>
+                </span>
+            </div>
+            <div class="description">${m.description}</div>
+        `;
+
+        document.getElementById('homePage').classList.add('hidden');
+        document.getElementById('uploadPage').classList.add('hidden');
+        document.getElementById('detailPage').classList.add('active');
+    }
+
+    function showHome() {
+        document.getElementById('homePage').classList.remove('hidden');
+        document.getElementById('uploadPage').classList.add('hidden');
+        document.getElementById('detailPage').classList.remove('active');
+        renderMovies(movies);
+    }
+
+    function showUpload() {
+        document.getElementById('homePage').classList.add('hidden');
+        document.getElementById('detailPage').classList.remove('active');
+        document.getElementById('uploadPage').classList.remove('hidden');
+    }
+
+    function searchMovies() {
+        const q = document.getElementById('searchInput').value.toLowerCase().trim();
+        if (!q) { renderMovies(movies); return; }
+        renderMovies(movies.filter(m => m.title.toLowerCase().includes(q)));
+    }
+
+    function filterGenre(genre) {
+        document.getElementById('homePage').classList.remove('hidden');
+        document.getElementById('uploadPage').classList.add('hidden');
+        document.getElementById('detailPage').classList.remove('active');
+        if (genre === 'all') { renderMovies(movies); return; }
+        renderMovies(movies.filter(m => m.genre === genre));
+    }
+
+    function filterYear(year) {
+        document.getElementById('homePage').classList.remove('hidden');
+        document.getElementById('uploadPage').classList.add('hidden');
+        document.getElementById('detailPage').classList.remove('active');
+        renderMovies(movies.filter(m => m.year === year));
+    }
+
+    function filterCountry(country) {
+        document.getElementById('homePage').classList.remove('hidden');
+        document.getElementById('uploadPage').classList.add('hidden');
+        document.getElementById('detailPage').classList.remove('active');
+        renderMovies(movies.filter(m => m.country.toLowerCase().includes(country.toLowerCase())));
+    }
+
+    function updateCounts() {
+        document.getElementById('countAll').textContent = movies.length;
+        document.getElementById('countAction').textContent = movies.filter(m => m.genre === 'боевик').length;
+        document.getElementById('countComedy').textContent = movies.filter(m => m.genre === 'комедия').length;
+        document.getElementById('countHorror').textContent = movies.filter(m => m.genre === 'ужасы').length;
+        document.getElementById('countScifi').textContent = movies.filter(m => m.genre === 'фантастика').length;
+        document.getElementById('countDrama').textContent = movies.filter(m => m.genre === 'драма').length;
+        document.getElementById('countThriller').textContent = movies.filter(m => m.genre === 'триллер').length;
+        document.getElementById('countCartoon').textContent = movies.filter(m => m.genre === 'мультфильм').length;
+    }
+
+    // Init
+    renderMovies(movies);
+</script>
+
+</body>
+</html>
