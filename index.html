@@ -412,11 +412,44 @@
             font-size: 13px;
         }
 
+        /* SIDE BANNERS */
+        .side-banner {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 99;
+            width: 160px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .side-banner:hover { opacity: 0.85; }
+        .side-banner.left { left: 0; }
+        .side-banner.right { right: 0; }
+        .side-banner img {
+            width: 100%;
+            height: auto;
+            border-radius: 0;
+            display: block;
+        }
+        @media (max-width: 1600px) {
+            .side-banner { width: 120px; }
+        }
+        @media (max-width: 1300px) {
+            .side-banner { display: none; }
+        }
+
         /* HIDDEN */
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
+
+<a class="side-banner left" href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.postimg.cc/NjN0FfJP/image.png" alt="1xBet">
+</a>
+<a class="side-banner right" href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.postimg.cc/QMwxgYrJ/image.png" alt="1xBet">
+</a>
 
 <header>
     <div class="header-top">
@@ -570,6 +603,12 @@
             </div>
         </div>
     </main>
+</div>
+
+<div style="max-width:900px;margin:0 auto 0;text-align:center;">
+    <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
+        <img src="https://i.postimg.cc/G3khYjgs/image.png" alt="1xBet" style="width:100%;max-width:900px;border-radius:8px;display:block;margin:0 auto;">
+    </a>
 </div>
 
 <footer>
