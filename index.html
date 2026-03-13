@@ -59,7 +59,7 @@
             justify-content: space-between;
             padding: 0 24px;
             height: 60px;
-            max-width: 1300px;
+            max-width: 1100px;
             margin: 0 auto;
         }
         .logo {
@@ -114,7 +114,7 @@
         nav ul {
             list-style: none;
             display: flex;
-            max-width: 1300px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 24px;
             overflow-x: auto;
@@ -142,7 +142,7 @@
         /* MAIN LAYOUT */
         .container {
             display: flex;
-            max-width: 1300px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 20px 24px;
             gap: 20px;
@@ -637,7 +637,7 @@
             position: fixed;
             top: 0;
             z-index: 99;
-            width: calc((100vw - 1300px) / 2);
+            width: calc((100vw - 1100px) / 2); /* Увеличили ширину баннеров, уменьшив место под контент */
             height: 100vh;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -649,9 +649,12 @@
             width: 100%;
             height: 100%;
             display: block;
-            object-fit: cover;
+            object-fit: contain; /* Картинка видна целиком */
+            object-position: center center; /* Выравнивание по центру по вертикали и горизонтали */
+            background: transparent;
+            transform: scale(1.1); /* Увеличиваем масштаб на 10%, чтобы картинка стала чуть больше */
         }
-        @media (max-width: 1300px) {
+        @media (max-width: 1100px) {
             .side-banner { display: none; }
         }
 
@@ -715,11 +718,11 @@
 <body>
 
 <!-- SIDE BANNERS -->
-<a class="side-banner left" href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
-    <img src="https://i.imgur.com/qiTbEcd.jpeg" alt="1xBet">
+<a class="side-banner left" href="https://защитник.рф" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.imgur.com/vRll3Iw.png" alt="Защитник">
 </a>
-<a class="side-banner right" href="https://1xbet.com" target="_blank" rel="noopener noreferrer">
-    <img src="https://i.imgur.com/pE30nTu.jpeg" alt="1xBet">
+<a class="side-banner right" href="https://защитник.рф" target="_blank" rel="noopener noreferrer">
+    <img src="https://i.imgur.com/gAJ7PXW.png" alt="Защитник">
 </a>
 
 
@@ -1016,7 +1019,7 @@
 </div>
 
 <!-- PRE-FOOTER PARTNER STRIP -->
-<div style="max-width:1300px;margin:16px auto;padding:0 20px;">
+<div style="max-width:1100px;margin:16px auto;padding:0 20px;">
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
         <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">🔥 1xBet — Бонус 100%</a>
         <a href="https://1xbet.com" target="_blank" rel="noopener noreferrer" class="promo-btn" style="padding:8px 16px;font-size:11px;">🎰 Vavada — 100 FS</a>
